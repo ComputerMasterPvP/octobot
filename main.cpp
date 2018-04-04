@@ -14,15 +14,15 @@ using namespace cv;
 
 //per convertire in stringa
 #define SSTR( x ) static_cast< std::ostringstream & >(( std::ostringstream() << std::dec << x ) ).str()
-//GOTURN è buggato almeno in OpenCV 3.2, proviamo su 3.4.0 ora
+//GOTURN Ã¨ buggato almeno in OpenCV 3.2, proviamo su 3.4.0 ora
 string trackerTypes[6] = { "BOOSTING", "MIL", "KCF", "TLD","MEDIANFLOW", "GOTURN" };
-//creo un tracker, usiamo MIL per iniziare, che è il migliore in genere, anche KCF però non scherza, se la contendono
+//creo un tracker, usiamo MIL per iniziare, che Ã¨ il migliore in genere, anche KCF perÃ² non scherza, se la contendono
 string trackerType = trackerTypes[1];
 Ptr<Tracker> tracker;
 Mat src;
 char messaggio;
 int x1, y1, x2, y2;
-int fact = 5;        //fattore di divergenza per l'invio di un'azione come il movimento a destra o sinistra
+int fact = 20;        //fattore di divergenza per l'invio di un'azione come il movimento a destra o sinistra
 int px1, py1, px2, py2, fd, k = 0, count;
 int main() {
 	VideoCapture cap(0);
@@ -31,7 +31,7 @@ int main() {
 		return 1;
 	}
 	//controllo pr la comunicazione seriale
-	if ((fd = serialOpen("/dev/ttyAMA0", 9600)) < 0) {
+	if ((fd = serialOpen("/dev/ttyUSB0", 9600)) < 0) {
 		fprintf(stderr, "Impossibile aprire la comunicazione seriale seriale: %s\n", strerror(errno));
 		return 1;
 	}
@@ -65,9 +65,9 @@ int main() {
 					messaggio = 'd';
 				if (px1 > x1 + fact)
 					messaggio = 's';
-				if (((px2 - px1)*(py2 - py1)) > ((x2 - x1)*(y2 - y1)))
+				if (((px2 - px1)*(py2 - py1)) > ((x2 - x1)*(y2 - y1)) + fact)
 					messaggio = 'a';
-				if (((x2 - x1)*(y2 - y1)) > ((px2 - px1)*(py2 - py1)))
+				if (((x2 - x1)*(y2 - y1)) > ((px2 - px1)*(py2 - py1)) + fact)
 					messaggio = 'i';
 			}
 			serialPutchar(fd, messaggio);
