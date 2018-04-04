@@ -17,7 +17,7 @@ using namespace cv;
 //GOTURN è buggato almeno in OpenCV 3.2, proviamo su 3.4.0 ora
 string trackerTypes[6] = { "BOOSTING", "MIL", "KCF", "TLD","MEDIANFLOW", "GOTURN" };
 //creo un tracker, usiamo MIL per iniziare, che è il migliore in genere, anche KCF però non scherza, se la contendono
-string trackerType = trackerTypes[1];
+string trackerType = trackerTypes[2];
 Ptr<Tracker> tracker;
 Mat src;
 char messaggio;
