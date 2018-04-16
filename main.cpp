@@ -21,7 +21,7 @@ string trackerType = trackerTypes[2];
 Ptr<Tracker> tracker;
 Mat src;
 char messaggio;
-int x1, y1, x2, y2;
+int x1, y11, x2, y2;
 int fact = 20;        //fattore di divergenza per l'invio di un'azione come il movimento a destra o sinistra
 int px1, py1, px2, py2, fd, k = 0, count;
 int main() {
@@ -32,7 +32,7 @@ int main() {
 	}
 	//controllo pr la comunicazione seriale
 	if ((fd = serialOpen("/dev/ttyUSB0", 9600)) < 0) {
-		fprintf(stderr, "Impossibile aprire la comunicazione seriale seriale: %s\n", strerror(errno));
+		fprintf(stderr, "Impossibile aprire la comunicazione seriale: %s\n", strerror(errno));
 		return 1;
 	}
 	cout << setfill('-') << setw(35) << "OCTOBOT" << setfill('-') << setw(20) << "\n";
@@ -57,22 +57,22 @@ int main() {
 		if (ok) {
 			rectangle(src, bbox, Scalar(255, 0, 0), 2, 1);
 			x1 = bbox.x;
-			y1 = bbox.y;
+			y11 = bbox.y;
 			x2 = x1 + bbox.width;
-			y2 = y1 + bbox.height;
+			y2 = y11 + bbox.height;
 			if (k > 0) {
 				if (x1 > px1 + fact)
 					messaggio = 'd';
 				if (px1 > x1 + fact)
 					messaggio = 's';
-				if (((px2 - px1)*(py2 - py1)) > ((x2 - x1)*(y2 - y1)) + fact)
+				if (((px2 - px1)*(py2 - py1)) > ((x2 - x1)*(y2 - y11)) + fact)
 					messaggio = 'a';
-				if (((x2 - x1)*(y2 - y1)) > ((px2 - px1)*(py2 - py1)) + fact)
+				if (((x2 - x1)*(y2 - y11)) > ((px2 - px1)*(py2 - py1)) + fact)
 					messaggio = 'i';
 			}
 			serialPutchar(fd, messaggio);
 			px1 = x1;
-			py1 = y1;
+			py1 = y11;
 			px2 = x2;
 			py2 = y2;
 			k++;
